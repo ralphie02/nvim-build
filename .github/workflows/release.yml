@@ -8,23 +8,17 @@ jobs:
   check-release:
     runs-on: ubuntu-latest
     outputs:
-      release: ${{ steps.get-release.outputs.release }}
-      tag: ${{ steps.get-tag.outputs.tag }}
+      release: ${{ steps.get-tag-and-release.outputs.release }}
+      tag: ${{ steps.get-tag-and-release.outputs.tag }}
     steps:
-    - name: Get tag
-      id: get-tag
+    - name: Get tag & release
+      id: get-tag-and-release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         tag=$(gh api repos/neovim/neovim/tags --jq '.[0].name')
-        printf 'tag=%s\n' ${tag} >> $GITHUB_ENV
-        printf 'tag=%s\n' ${tag} >> $GITHUB_OUTPUT
-    - name: Get release
-      id: get-release
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
         release=$(gh api repos/${{ github.repository }}/releases --jq ".[].tag_name | select(. == \"${tag}\")")
+        printf 'tag=%s\n' ${tag} >> $GITHUB_OUTPUT
         printf 'release=%s\n' ${release} >> $GITHUB_OUTPUT
   linux:
     if: ${{ needs.check-release.outputs.release == '' }}
