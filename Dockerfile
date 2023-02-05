@@ -5,7 +5,9 @@
 #   - https://github.com/neovim/neovim/wiki/Building-Neovim#ubuntu--debian
 
 # Below Dockerfile was taken from here: 
-# - https://github.com/neovim/neovim/pull/15542/files#diff-f24408bfda9d1326bfe81569cae8dc65c370a3940b37ae738a329199bb43e67c
+# - https://github.com/uesyn/neovim-arm64-builder/blob/main/Dockerfile-builder 
+#   - based on this
+#     - https://github.com/neovim/neovim/pull/15542/files#diff-f24408bfda9d1326bfe81569cae8dc65c370a3940b37ae738a329199bb43e67c
 
 # Builds Neovim into a tar.gz
 #
@@ -25,6 +27,7 @@ ARG CC                # should be gcc-11
 ARG CMAKE_EXTRA_FLAGS # See release.yml for examples
 ARG CMAKE_BUILD_TYPE  # Release, Debug or RelWithDebInfo
 ARG ARCH              # only used for file names
+ARG GIT_TAG=master
 
 # Don't ask for TZ information and set a sane default TZ
 ARG DEBIAN_FRONTEND=noninteractive
@@ -44,14 +47,8 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
-# build release
+RUN git clone -b ${GIT_TAG} https://github.com/neovim/neovim.git /neovim
 WORKDIR /neovim
-COPY . .
-
-# For now, we will enforce a clean state before building
-# (these may be copied over via the above step on a user machine,
-# not really in CI)
-RUN rm -rf build/ .deps/
 
 RUN CC=${CC} make CMAKE_BUILD_TYPE="${CMAKE_BUILD_TYPE}" \
                   CMAKE_EXTRA_FLAGS="${CMAKE_EXTRA_FLAGS}" \
