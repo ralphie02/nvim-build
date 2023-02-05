@@ -2,7 +2,7 @@ name: Release
 on:
   #schedule:
   #- cron: '0 7 * * *'
-  #workflow_dispatch:
+  workflow_dispatch:
   #push:
 jobs:
   check-release:
@@ -44,7 +44,7 @@ jobs:
           --build-arg CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX:PATH=" \
           --build-arg ARCH=arm64 \
           --build-arg GIT_TAG=${{ needs.check-release.outputs.tag }} \
-          -f Dockerfile-builder -o build .
+          -f Dockerfile -o build .
     - name: Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
