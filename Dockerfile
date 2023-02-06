@@ -19,9 +19,9 @@ ENV TZ=Etc/UTC
 
 # https://github.com/neovim/neovim/wiki/Building-Neovim#ubuntu--debian
 RUN apt-get update && apt-get install -y ninja-build gettext libtool libtool-bin \
-        autoconf automake cmake g++ pkg-config unzip curl doxygen git \
-    && rm -rf /var/lib/apt/lists/* \
-    && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+        autoconf automake cmake g++ pkg-config unzip curl doxygen git
+    #&& rm -rf /var/lib/apt/lists/* \
+    #&& localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
 RUN git clone -b ${GIT_TAG} https://github.com/neovim/neovim.git /neovim
 WORKDIR /neovim
