@@ -1,9 +1,8 @@
 name: Release
 on:
-  #schedule:
-  #- cron: '0 7 * * *'
+  schedule:
+  - cron: '0 7 * * *'
   workflow_dispatch:
-  #push:
 jobs:
   check-release:
     runs-on: ubuntu-latest
