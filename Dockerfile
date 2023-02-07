@@ -9,7 +9,6 @@
 FROM ubuntu:18.04 AS build-stage
 
 # these must be passed in via --build-arg
-ARG CMAKE_EXTRA_FLAGS # See release.yml for examples
 ARG CMAKE_BUILD_TYPE  # Release, Debug or RelWithDebInfo
 ARG GIT_TAG=stable    # neovim tag
 
@@ -19,20 +18,20 @@ ENV TZ=Etc/UTC
 
 # https://github.com/neovim/neovim/wiki/Building-Neovim#ubuntu--debian
 RUN apt-get update && apt-get install -y ninja-build gettext libtool libtool-bin \
-        autoconf automake cmake g++ pkg-config unzip curl doxygen git
-    #&& rm -rf /var/lib/apt/lists/* \
-    #&& localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+        autoconf automake cmake g++ pkg-config unzip curl doxygen locales git
+    && rm -rf /var/lib/apt/lists/* \
+    && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
 RUN git clone -b ${GIT_TAG} https://github.com/neovim/neovim.git /neovim
 WORKDIR /neovim
 
 # https://github.com/neovim/neovim/wiki/Installing-Neovim#install-from-source
 RUN make CMAKE_BUILD_TYPE="${CMAKE_BUILD_TYPE}" \
-    CMAKE_EXTRA_FLAGS="${CMAKE_EXTRA_FLAGS}" \
+    CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=/opt/neovim" \
     && make install \
     && cd "/opt" \
     && tar cfz neovim.tar.gz neovim
 
 # copy artifacts out of build image
 FROM scratch AS export-stage
-COPY --from=build-stage /neovim.tar.gz /
+COPY --from=build-stage /opt/neovim.tar.gz /
