@@ -15,12 +15,12 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        tag=v0.8.2
+        tag=$(gh api repos/neovim/neovim/tags --jq '.[0].name')
         release=$(gh api repos/${{ github.repository }}/releases --jq ".[].tag_name | select(. == \"${tag}\")")
         printf 'tag=%s\n' ${tag} >> $GITHUB_OUTPUT
         printf 'release=%s\n' ${release} >> $GITHUB_OUTPUT
   linux:
-    if: ${{ needs.check-release.outputs.release == '' }}
+    #if: ${{ needs.check-release.outputs.release == '' }}
     needs: check-release
     runs-on: ubuntu-latest
     steps:
@@ -43,4 +43,4 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        gh release create ${{ needs.check-release.outputs.tag }} --notes="${{ needs.check-release.outputs.tag }}" build/*.tar.gz
+        gh release create test --notes="${{ needs.check-release.outputs.tag }}" build/*.tar.gz
