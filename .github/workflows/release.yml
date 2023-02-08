@@ -36,7 +36,6 @@ jobs:
     - name: Build
       run: |
         docker buildx build --platform linux/arm64 \
-          --build-arg CMAKE_BUILD_TYPE=Release \
           --build-arg GIT_TAG=${{ needs.check-release.outputs.tag }} \
           -f Dockerfile -o build .
     - name: Release # sourced via -o <release-directory> (ie. build/)
