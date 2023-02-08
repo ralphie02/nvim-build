@@ -1,4 +1,4 @@
-# neovim installation
+# neovim installation (ARM64 only)
 
 ```bash
 wget -P /tmp https://github.com/ralphie02/neovim-build/releases/download/<version>/neovim.tar.gz
