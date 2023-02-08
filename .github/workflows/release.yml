@@ -30,21 +30,15 @@ jobs:
       uses: docker/setup-qemu-action@v2
       with:
         image: tonistiigi/binfmt:latest # default
-        platforms: arm64
+        platforms: arm64 # skip for all (default)
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
-      with:
-        install: true
     - name: Build
       run: |
         docker buildx build --platform linux/arm64 \
-          --build-arg CC=gcc-11 \
-          --build-arg CMAKE_BUILD_TYPE=Release \
-          --build-arg CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX:PATH=" \
-          --build-arg ARCH=arm64 \
           --build-arg GIT_TAG=${{ needs.check-release.outputs.tag }} \
           -f Dockerfile -o build .
-    - name: Release
+    - name: Release # sourced via -o <release-directory> (ie. build/)
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
