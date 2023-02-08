@@ -9,8 +9,8 @@
 FROM ubuntu:18.04 AS build-stage
 
 # these must be passed in via --build-arg
-ARG CMAKE_BUILD_TYPE  # Release, Debug or RelWithDebInfo
-ARG GIT_TAG=stable    # neovim tag
+ARG CMAKE_BUILD_TYPE=Release    # Release, Debug or RelWithDebInfo
+ARG GIT_TAG=stable              # neovim tag
 
 # Don't ask for TZ information and set a sane default TZ
 ARG DEBIAN_FRONTEND=noninteractive
@@ -18,9 +18,9 @@ ENV TZ=Etc/UTC
 
 # https://github.com/neovim/neovim/wiki/Building-Neovim#ubuntu--debian
 RUN apt-get update && apt-get install -y ninja-build gettext libtool libtool-bin \
-        autoconf automake cmake g++ pkg-config unzip curl doxygen locales git \
-        && rm -rf /var/lib/apt/lists/* \
-        && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+    autoconf automake cmake g++ pkg-config unzip curl doxygen locales git \
+    && rm -rf /var/lib/apt/lists/* \
+    && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
 RUN git clone -b ${GIT_TAG} https://github.com/neovim/neovim.git /neovim
 WORKDIR /neovim
