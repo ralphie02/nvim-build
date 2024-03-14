@@ -1,16 +1,16 @@
 # Original author: https://github.com/uesyn/neovim-arm64-builder/blob/main/Dockerfile-builder 
 #   Original author ref: https://github.com/neovim/neovim/pull/15542/files
 
-# Builds Neovim into a tar.gz
+# Builds Nvim into a tar.gz
 # If you run docker build with the `-o <dir>` flag, it will copy the contents of the final stage out to that dir.
-# Exported file: neovim.tar.gz
+# Exported file: nvim.tar.gz
 
 # Build on the oldest supported images, so we have broader compatibility
 FROM ubuntu:22.04 AS build-stage
 
 # these must be passed in via --build-arg
 ARG CMAKE_BUILD_TYPE=Release    # Release, Debug or RelWithDebInfo
-ARG GIT_TAG=stable              # neovim tag
+ARG GIT_TAG=stable              # nvim tag
 
 # Don't ask for TZ information and set a sane default TZ
 ARG DEBIAN_FRONTEND=noninteractive
@@ -33,11 +33,11 @@ WORKDIR /neovim
 
 # https://github.com/neovim/neovim/wiki/Installing-Neovim#install-from-source
 RUN make CMAKE_BUILD_TYPE="${CMAKE_BUILD_TYPE}" \
-    CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=/opt/neovim" \
+    CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=/opt/nvim" \
     && make install \
     && cd "/opt" \
-    && tar cfz neovim.tar.gz neovim
+    && tar cfz nvim.tar.gz nvim
 
 # copy artifacts out of build image
 FROM scratch AS export-stage
-COPY --from=build-stage /opt/neovim.tar.gz /
+COPY --from=build-stage /opt/nvim.tar.gz /
