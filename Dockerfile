@@ -22,9 +22,8 @@ ENV TZ=Etc/UTC
 # 
 ## RUN apt-get update && apt-get install -y ninja-build gettext libtool libtool-bin \
 ##    autoconf automake cmake g++ pkg-config unzip curl doxygen locales git \
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ninja-build gettext cmake unzip curl libtool libtool-bin \
-    autoconf automake g++ pkg-config locales git \
+RUN apt-get update && apt-get install -y --no-install-recommends ninja-build gettext cmake unzip curl \
+    libtool libtool-bin ca-certificates autoconf automake g++ pkg-config locales git \
     && rm -rf /var/lib/apt/lists/* \
     && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
